@@ -94,11 +94,11 @@ public with sharing class SOQLTest {
         Opportunity testOpportunity2 = new Opportunity(Name = 'Test Opportunity 2', StageName = 'Closed Won', CloseDate = Date.today(), AccountId = testAccount.Id, Amount = 2000);
         Opportunity testOpportunity3 = new Opportunity(Name = 'Test Opportunity 3', StageName = 'Prospecting', CloseDate = Date.today(), AccountId = testAccount.Id, Amount = 3000);
         insert new List<Opportunity>{testOpportunity1, testOpportunity2, testOpportunity3};
-
+        
         // Call the method to test
-        List<Opportunity> opportunities = null; //Replace null with your method passing in testAccount.Id
+        List<Opportunity> opportunities = SOQL.getClosedWonOpportunityCountByAccount(testAccount.Id);//Replace null with your method passing in testAccount.Id
 
-        // Assert that the number of opportunities returned is correct
+        // Assert that the number of opportunities returned is correct        
         System.assertEquals(2, opportunities.size(), 'Number of opportunities returned is incorrect.');
 
         // Assert that the opportunities returned have the correct names and stages
