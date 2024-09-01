@@ -252,10 +252,11 @@ public with sharing class SOQL {
         // Create a map to hold the Account Ids to Account Names
         Map<Id, String> accountIdsToNames = new Map<Id, String>();
 
-        // Query the Accounts
-        // Loop through each Account and add the Id and Name to the map
-
-        return null; // Replace null with the variable you used to store the result
+        List<Account> accountList = [SELECT Id, Name, BillingCountry FROM Account WHERE BillingCountry != :country]; // Query the Accounts
+        for (Account accountItem : accountList){
+            accountIdsToNames.put(accountItem.Id, accountItem.Name);
+        }
+        return accountIdsToNames;
     }
 
     /**
