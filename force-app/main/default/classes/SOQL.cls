@@ -16,7 +16,7 @@
 * Users of this class can expect to gain a solid understanding of SOQL in Apex and
 * be prepared to handle data retrieval tasks in Salesforce development.
 * 
-* @author Your Name
+* @author Malcolm Philips
 */
 
 public with sharing class SOQL {
@@ -162,16 +162,13 @@ public with sharing class SOQL {
      * @return A list of Contact LastName.
      */
     public static List<String> getContactNamesByAccount(Id accountId) {
-        // Create a list to hold the Contact LastNames
+        List<String> contactLastNames = new List<String>();   // Create a list to hold the Contact LastNames
 
-        // Query the Contacts
-        // Loop through each Contact and add the LastName to the list
-        //for () {
-        //    
-        //}
-
-        // Return the list of Contact LastNames
-        return null; // Replace null with the variable you used to store the result
+        List<Contact> contactList = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId = :accountId]; // Query the Contacts
+        for (Contact contact : contactList) {           //loop through Contacts
+            contactLastNames.add(contact.LastName);     // add contact Last Name to contactLastNames list
+        }        
+        return contactLastNames; 
     }
 
     /**
