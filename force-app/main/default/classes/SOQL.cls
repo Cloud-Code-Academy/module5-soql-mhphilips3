@@ -179,9 +179,8 @@ public with sharing class SOQL {
      * @return The total revenue.
      */
     public static Decimal getTotalRevenueByStage(String stage) {
-        AggregateResult[] totalList = [SELECT SUM(Amount) FROM Opportunity WHERE StageName = :stage OR Amount > 10000]; // Use AggregateQuery to get the total revenue        
-        Decimal totalRevenue = (Decimal)totalList[0].get('expr0');
-        return totalRevenue; // Return the total revenue
+        AggregateResult[] totalList = [SELECT SUM(Amount)summedAmount FROM Opportunity WHERE StageName = :stage OR Amount > 10000]; // Use AggregateQuery to get the total revenue        
+        return (Decimal)totalList[0].get('summedAmount');        
     }
 
     /**
@@ -308,21 +307,17 @@ public with sharing class SOQL {
      * @return A list of Accounts with matching email domains.
      */
     public static List<Account> findAccountsByLeadEmailDomains(Set<Id> leadIds) {
-        // Query the Leads
+        List<Lead> leadList = [SELECT Id, Email FROM Lead WHERE Id IN :leadIds];  // Query the Leads
 
-        // Create a set of email domains from the Leads
-
-        // Loop through each Lead
-
-            // Get the email from the Lead
-
-            // Check if the email is not null
-
-                // Add the email domain to the set
-
+     /*   Set<String> emailDomainSet = new Set<String>(); // Create a set of email domains from the Leads
+        for (Lead leadInstance : leadList){     // Loop through each Lead
+            If (leadInstance.Email != null) {    // Check if the email is not null
+                emailDomainSet.add(leadInstance.email.substringAfter('@')); // Get the email from the Lead; add domain to the set
+            }    
+        }
         
-        // Query the Accounts
-        return null; // Replace null with the variable you used to store the result
+        List<Account> accts = [SELECT Id, Website, Name FROM Account WHERE Website LIKE :('%' + )];// Query the Accounts*/
+        return null; // Replace null with the variable you used to store the result 
     }
 
     /**
