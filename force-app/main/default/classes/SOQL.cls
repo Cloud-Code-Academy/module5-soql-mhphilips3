@@ -309,15 +309,14 @@ public with sharing class SOQL {
     public static List<Account> findAccountsByLeadEmailDomains(Set<Id> leadIds) {
         List<Lead> leadList = [SELECT Id, Email FROM Lead WHERE Id IN :leadIds];  // Query the Leads
 
-     /*   Set<String> emailDomainSet = new Set<String>(); // Create a set of email domains from the Leads
+        Set<String> websiteSet = new Set<String>(); // Create a set to hold website addresses from the lead email domains
         for (Lead leadInstance : leadList){     // Loop through each Lead
             If (leadInstance.Email != null) {    // Check if the email is not null
-                emailDomainSet.add(leadInstance.email.substringAfter('@')); // Get the email from the Lead; add domain to the set
+                websiteSet.add('www.' + leadInstance.email.substringAfter('@')); // Get the email from the Lead, extract domain, add website to the set
             }    
-        }
-        
-        List<Account> accts = [SELECT Id, Website, Name FROM Account WHERE Website LIKE :('%' + )];// Query the Accounts*/
-        return null; // Replace null with the variable you used to store the result 
+        }        
+        List<Account> accts = [SELECT Id, Website, Name FROM Account WHERE Website IN :websiteSet];// Query the Accounts
+        return accts; // Replace null with the variable you used to store the result 
     }
 
     /**
