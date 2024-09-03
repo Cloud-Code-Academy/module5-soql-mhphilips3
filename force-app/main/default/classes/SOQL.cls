@@ -355,8 +355,9 @@ public with sharing class SOQL {
      * Example: getOpportunityDetailsForClosedWon()
      * @return A list of filtered Opportunity
      */
-    public static List<Opportunity> getOpportunityDetailsForClosedWon() {        
-        return null; // Replace null with the variable you used to store the result
+    public static List<Opportunity> getOpportunityDetailsForClosedWon() { 
+        List<Opportunity> oppList = [SELECT Id, Name, StageName, Account.Name, Owner.Name FROM Opportunity WHERE StageName = 'Closed Won'];       
+        return oppList; // Replace null with the variable you used to store the result
     }
 
     /**
