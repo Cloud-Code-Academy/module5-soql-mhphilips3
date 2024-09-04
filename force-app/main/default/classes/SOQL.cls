@@ -29,7 +29,7 @@ public with sharing class SOQL {
      * Update the corresponding test class and testGetAllLeads method to cover this method
      */
     public static List<Lead> getAllLeads() {
-        List<Lead> leadList = [SELECT Id, LastName, Company, Phone, Email FROM Lead];
+        List<Lead> leadList = new List<Lead>([SELECT Id, LastName, Company, Phone, Email FROM Lead]);
         return leadList;
     }
 
@@ -41,7 +41,9 @@ public with sharing class SOQL {
      * Update the corresponding test class and testGetContactsByFirstName method to cover this method
      */
     public static List<Contact> getContactsByFirstName(String contactName) {
-        List<Contact> contactList = [SELECT Id, Name FROM Contact WHERE FirstName = :contactName];
+        List<Contact> contactList = new List<Contact>([ SELECT Id, Name 
+                                                        FROM Contact 
+                                                        WHERE FirstName = :contactName]);
         return contactList;
     }
 
@@ -53,7 +55,10 @@ public with sharing class SOQL {
      * Update the corresponding test class and testGetContactIdsByLastName method to cover this method
      */
     public static List<Id> getContactIdsByLastName(String lastName1, String lastName2) {
-        List<Contact> contactList = [SELECT Id FROM Contact WHERE LastName IN (:lastName1, :lastName2)];
+        List<Contact> contactList = new List<Contact>([SELECT Id 
+                                                        FROM Contact 
+                                                        WHERE LastName 
+                                                        IN (:lastName1, :lastName2)]);
         List<Id> contactIds = new List<Id>();
         for(Contact contact : contactList){
             contactIds.add(contact.Id);
@@ -72,7 +77,9 @@ public with sharing class SOQL {
      * Update the corresponding test class and testGetClosedWonOpportunityCountByAccount method to cover this method
      */
     public static List<Opportunity> getClosedWonOpportunityCountByAccount(Id accountId) {
-        List<Opportunity> oppList = [SELECT Id, Name, Amount, StageName, CloseDate, AccountId FROM Opportunity WHERE AccountId = :accountId AND StageName = 'Closed Won'];
+        List<Opportunity> oppList = new List<Opportunity>([SELECT Id, Name, Amount, StageName, CloseDate, AccountId 
+                                                            FROM Opportunity 
+                                                            WHERE AccountId = :accountId AND StageName = 'Closed Won']);
         return oppList;
     }
 
@@ -96,7 +103,9 @@ public with sharing class SOQL {
      * Update the corresponding test class and testGetTasksDueNextWeek method to cover this method
      */
     public static Map<Id, Task> getTasksDueNextWeek() {
-        List<Task> taskList = [SELECT Id, Subject, ActivityDate, WhoId, Priority, Status, WhatId FROM Task WHERE ActivityDate = NEXT_N_DAYS:7];
+        List<Task> taskList = new List<Task>([SELECT Id, Subject, ActivityDate, WhoId, Priority, Status, WhatId 
+                                                FROM Task 
+                                                WHERE ActivityDate = NEXT_N_DAYS:7]);
         Map<Id, Task> taskMap = new Map<Id, Task>();
         for (Task task : taskList){
             taskMap.put(task.Id, task);            
@@ -111,9 +120,10 @@ public with sharing class SOQL {
      * @return A list of Contact records.
      * Update the corresponding test class and testGetContactsByEmailDomain method to cover this method
      */
-    public static List<Contact> getContactsByEmailDomain(String emailDomain) {
-        String likeString = '%' + emailDomain;
-        List<Contact> contactList = [SELECT Id, Name, Email FROM Contact WHERE Email LIKE :likeString];
+    public static List<Contact> getContactsByEmailDomain(String emailDomain) {       
+        List<Contact> contactList = new List<Contact>([SELECT Id, Name, Email 
+                                                        FROM Contact 
+                                                        WHERE Email LIKE :('%' + emailDomain)]);
         return contactList;
     }
 
@@ -125,8 +135,10 @@ public with sharing class SOQL {
      * @return A list of Opportunity records.
      */
     public static List<Opportunity> getOpportunitiesByNameKeyword(String keyword) {
-        List<Opportunity> oppList = [SELECT Id, Name, AccountId, Amount FROM Opportunity WHERE Name LIKE :('%'+ keyword +'%')];
-        return oppList; // Replace null with the variable you used to store the result
+        List<Opportunity> oppList = new List<Opportunity>([SELECT Id, Name, AccountId, Amount 
+                                                            FROM Opportunity 
+                                                            WHERE Name LIKE :('%'+ keyword +'%')]);
+        return oppList;
     }
 
     /**
@@ -135,8 +147,11 @@ public with sharing class SOQL {
      * @return A list of Case records.
      */
     public static List<Case> getFilterCaseOrigins() {
-        List<Case> caseList = [SELECT Id, Origin, Subject, Status FROM Case WHERE Origin NOT IN ('Web', 'Email', '', null)];
-        return caseList; // Replace null with the variable you used to store the result
+        List<Case> caseList = new List<Case>([SELECT Id, Origin, Subject, Status 
+                                                FROM Case 
+                                                WHERE Origin 
+                                                NOT IN ('Web', 'Email', '', null)]);
+        return caseList;
     }
 
     /**
@@ -150,7 +165,9 @@ public with sharing class SOQL {
      * Update the corresponding test class and testGetLeadsBySourceOrTitle method to cover this method
      */
     public static List<Lead> getLeadsBySourceOrTitle(String leadSource, String leadTitle) {
-        List<Lead> leadList = [SELECT Id, LeadSource, Title, Company, Phone, Email, LastName FROM Lead WHERE LeadSource =:leadSource OR Title LIKE :('%'+leadTitle+'%')];
+        List<Lead> leadList = new List<Lead>([SELECT Id, LeadSource, Title, Company, Phone, Email, LastName 
+                                                FROM Lead 
+                                                WHERE LeadSource =:leadSource OR Title LIKE :('%'+leadTitle+'%')]);
         return leadList;
     }    
 
@@ -164,7 +181,9 @@ public with sharing class SOQL {
     public static List<String> getContactNamesByAccount(Id accountId) {
         List<String> contactLastNames = new List<String>();   // Create a list to hold the Contact LastNames
 
-        List<Contact> contactList = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId = :accountId]; // Query the Contacts
+        List<Contact> contactList = new List<Contact>([SELECT Id, LastName, AccountId 
+                                                        FROM Contact 
+                                                        WHERE AccountId = :accountId]); // Query the Contacts
         for (Contact contact : contactList) {           //loop through Contacts
             contactLastNames.add(contact.LastName);     // add contact Last Name to contactLastNames list
         }        
@@ -179,7 +198,9 @@ public with sharing class SOQL {
      * @return The total revenue.
      */
     public static Decimal getTotalRevenueByStage(String stage) {
-        AggregateResult[] totalList = [SELECT SUM(Amount)summedAmount FROM Opportunity WHERE StageName = :stage OR Amount > 10000]; // Use AggregateQuery to get the total revenue        
+        AggregateResult[] totalList = [SELECT SUM(Amount)summedAmount 
+                                        FROM Opportunity 
+                                        WHERE StageName = :stage OR Amount > 10000]; // Use AggregateQuery to get the total revenue        
         return (Decimal)totalList[0].get('summedAmount');        
     }
 
@@ -189,7 +210,7 @@ public with sharing class SOQL {
      * @return A list of the first 10 Accounts ordered by Name.
      */
     public static List<Account> getFirstTenAccounts() {
-        List<Account> accountList = [SELECT Id, Name FROM Account ORDER BY Name LIMIT 10];
+        List<Account> accountList = new List<Account>([SELECT Id, Name FROM Account ORDER BY Name LIMIT 10]);
         return accountList;
     }
     
@@ -199,7 +220,11 @@ public with sharing class SOQL {
      * @return A list of Opportunities with an Amount greater than 100,000, ordered by CloseDate, and limited to 5 records.
      */
     public static List<Opportunity> getHighValueOpportunities() {
-        List<Opportunity> oppList = [SELECT Id, Amount, CloseDate FROM Opportunity WHERE Amount > 100000 ORDER BY CloseDate LIMIT 5];
+        List<Opportunity> oppList = new List<Opportunity>([SELECT Id, Amount, CloseDate 
+                                                            FROM Opportunity 
+                                                            WHERE Amount > 100000 
+                                                            ORDER BY CloseDate 
+                                                            LIMIT 5]);
         return oppList;
     }
     
@@ -209,8 +234,12 @@ public with sharing class SOQL {
      * @return A list of Contacts
      */
     public static List<Contact> getBirthdateContacts() {
-        List<Contact> birthdayList = [SELECT Id, Name, Birthdate FROM Contact WHERE Birthdate != null ORDER BY Birthdate DESC LIMIT 3];
-        return birthdayList; // Replace null with the variable you used to store the result
+        List<Contact> birthdayList = new List<Contact>([SELECT Id, Name, Birthdate 
+                                                        FROM Contact 
+                                                        WHERE Birthdate != null 
+                                                        ORDER BY Birthdate DESC 
+                                                        LIMIT 3]);
+        return birthdayList;
     }
     
     /**
@@ -219,7 +248,12 @@ public with sharing class SOQL {
      * @return A list of Cases
      */
     public static List<Case> getCasesWithStatus() {
-        List<Case> caseList = [SELECT Id, Status, CreatedDate FROM Case WHERE Status != 'Closed' ORDER BY CreatedDate LIMIT 10 OFFSET 5];
+        List<Case> caseList = new List<Case>([SELECT Id, Status, CreatedDate 
+                                                FROM Case 
+                                                WHERE Status != 'Closed' 
+                                                ORDER BY CreatedDate 
+                                                LIMIT 10 
+                                                OFFSET 5]);
         return caseList;
     }
 
@@ -231,10 +265,11 @@ public with sharing class SOQL {
      * @return A set of Case Ids.
      */
     public static Set<Id> getCaseIdsByAccount(Id accountId) {
-        Set<Id> caseIds = new Set<Id>();  // Create a set to hold the Case Ids
-        
-        List<Case> caseList = [SELECT Id, AccountId FROM CASE WHERE AccountId = :accountId]; // Query the Cases
-        for (Case caseItem : caseList){// Loop through each Case and add the Id to the set
+        Set<Id> caseIds = new Set<Id>();                                        // Create a set to hold the Case Ids        
+        List<Case> caseList = new List<Case>([SELECT Id, AccountId 
+                                                FROM CASE 
+                                                WHERE AccountId = :accountId]); // Query the Cases
+        for (Case caseItem : caseList){                                         // Loop through each Case and add the Id to the set
             caseIds.add(caseItem.Id);
         }
         return caseIds;      
@@ -250,8 +285,9 @@ public with sharing class SOQL {
     public static Map<Id, String> getAccountIdsToNamesNotInCountry(String country) {
         // Create a map to hold the Account Ids to Account Names
         Map<Id, String> accountIdsToNames = new Map<Id, String>();
-
-        List<Account> accountList = [SELECT Id, Name, BillingCountry FROM Account WHERE BillingCountry != :country]; // Query the Accounts
+        List<Account> accountList = new List<Account>([SELECT Id, Name, BillingCountry 
+                                                        FROM Account 
+                                                        WHERE BillingCountry != :country]); // Query the Accounts
         for (Account accountItem : accountList){
             accountIdsToNames.put(accountItem.Id, accountItem.Name);
         }
@@ -278,7 +314,11 @@ public with sharing class SOQL {
      * @return An Account record with related Opportunities.
      */
     public static Account getAccountAndOpportunitiesFromAccountId(Id accountId) {
-        Account acct = [SELECT Id, Name, (SELECT Id, Name, CloseDate, StageName FROM Opportunities) FROM Account WHERE Id = :accountId];
+        Account acct = [SELECT Id, Name, 
+                            (SELECT Id, Name, CloseDate, StageName 
+                            FROM Opportunities) 
+                        FROM Account 
+                        WHERE Id = :accountId];
         return acct;
     }
 
@@ -290,11 +330,14 @@ public with sharing class SOQL {
      * @return List of contacts with the same Mailing State as the Account Billing State
      */
     public static List<Contact> getAccountsWithContactsByState(Id accountId) {
-        Account acct = [SELECT Id, BillingState FROM Account WHERE Id = :accountId];  // Query the Account
-        String acctState = acct.BillingState;  // Store the Account's BillingState
-        
+        Account acct = [SELECT Id, BillingState 
+                        FROM Account 
+                        WHERE Id = :accountId];  // Query the Account
+        String acctState = acct.BillingState;  // Store the Account's BillingState       
 
-        List<Contact> contactList = [SELECT Id, MailingState FROM Contact WHERE MailingState = :acctState];  // Query the Contacts
+        List<Contact> contactList = new List<Contact>([SELECT Id, MailingState 
+                                                        FROM Contact 
+                                                        WHERE MailingState = :acctState]);  // Query the Contacts
         return contactList; 
     }
 
@@ -307,16 +350,19 @@ public with sharing class SOQL {
      * @return A list of Accounts with matching email domains.
      */
     public static List<Account> findAccountsByLeadEmailDomains(Set<Id> leadIds) {
-        List<Lead> leadList = [SELECT Id, Email FROM Lead WHERE Id IN :leadIds];  // Query the Leads
-
+        List<Lead> leadList = new List<Lead>([SELECT Id, Email 
+                                                FROM Lead 
+                                                WHERE Id IN :leadIds]);  // Query the Leads
         Set<String> websiteSet = new Set<String>(); // Create a set to hold website addresses from the lead email domains
         for (Lead leadInstance : leadList){     // Loop through each Lead
             If (leadInstance.Email != null) {    // Check if the email is not null
                 websiteSet.add('www.' + leadInstance.email.substringAfter('@')); // Get the email from the Lead, extract domain, add website to the set
             }    
         }        
-        List<Account> accts = [SELECT Id, Website, Name FROM Account WHERE Website IN :websiteSet];// Query the Accounts
-        return accts; // Replace null with the variable you used to store the result 
+        List<Account> accts = new List<Account>([SELECT Id, Website, Name 
+                                                    FROM Account 
+                                                    WHERE Website IN :websiteSet]);// Query the Accounts
+        return accts;
     }
 
     /**
@@ -328,22 +374,22 @@ public with sharing class SOQL {
      * @param List of cloned Opportunity Ids
      */
     public static void cloneLineItems(Id origOppId, List<Id> cloneOppIds) {
-        // Query the original Opportunity Line Items
-        List<OpportunityLineItem> oppLineItemList = [SELECT Id, Quantity, UnitPrice, PricebookEntryId FROM OpportunityLineItem WHERE OpportunityId = :origOppId];
+        
+        List<OpportunityLineItem> oppLineItemList = new List<OpportunityLineItem>([SELECT Id, Quantity, UnitPrice, PricebookEntryId 
+                                                                                    FROM OpportunityLineItem 
+                                                                                    WHERE OpportunityId = :origOppId]);   // Query the original Opportunity Line Items
 
-        // Create a list to hold the new line items
-        List<OpportunityLineItem> clonedOppLineItemList = new List<OpportunityLineItem>();
-        // Generate a random number between 1 and 3
-        //(Integer)(Math.random() *(Max-Min+1)) + Min
-        Integer randomNumber = (Integer)(Math.random() * (3-1+1)) +1;
-        // Loop through each cloned Opportunity Id
-        for (Id oppCloneId : cloneOppIds){
-            // Loop through each original line item
-            for (OpportunityLineItem oppLineItem : oppLineItemList){
-                OpportunityLineItem newOLI = oppLineItem.clone(false, false, false, false); // Clone the original line item 
-                newOLI.OpportunityId = OppCloneId;              // associate current cloned OLI with current cloned Opportunity
-                newOLI.Quantity = randomNumber;                // add the random number to the quantity
-                clonedOppLineItemList.add(newOLI);                // add cloned OLI to list
+        
+        List<OpportunityLineItem> clonedOppLineItemList = new List<OpportunityLineItem>();          // Create a list to hold the new line items 
+        
+        Integer randomNumber = (Integer)(Math.random() * (3-1+1)) +1;   // Generate a random number between 1 and 3 >>(Integer)(Math.random() *(Max-Min+1)) + Min
+        
+        for (Id oppCloneId : cloneOppIds){                                                       // Loop through each cloned Opportunity Id            
+            for (OpportunityLineItem oppLineItem : oppLineItemList){                            // Loop through each original line item
+                OpportunityLineItem newOLI = oppLineItem.clone(false, false, false, false);     // Clone the original line item 
+                newOLI.OpportunityId = OppCloneId;                           // associate current cloned OLI with current cloned Opportunity
+                newOLI.Quantity = randomNumber;                             // add the random number to the quantity
+                clonedOppLineItemList.add(newOLI);                          // add cloned OLI to list
             }
         }
         insert clonedOppLineItemList;  // Insert the new OLI list
@@ -381,11 +427,7 @@ public with sharing class SOQL {
                                     FROM Contact 
                                     WHERE AccountId 
                                     IN :accountIdSet];         
-        for (Contact cont : contactList){// Loop through each Contact and add the Account Id and Contact to the map
-            System.debug('Contact: ' + cont.Name + 'CreatedDate: ' + cont.CreatedDate);               
-            if (contactAccountMap.containsKey(cont.AccountId)){
-            continue;
-            }
+        for (Contact cont : contactList){// Loop through each Contact and add the Account Id and Contact to the map  
             contactAccountMap.put(cont.AccountId, cont);
         }
         for (Opportunity opp : oppList){                        // Loop through each Opportunity
