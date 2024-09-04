@@ -727,7 +727,7 @@ public with sharing class SOQLTest {
             Assert.fail('Exception thrown: ' + ex.getMessage());
         }
     }
-/*
+
     @IsTest
     static void testSetPrimaryContact() {
         // Create test data
@@ -749,8 +749,8 @@ public with sharing class SOQLTest {
 
         // Assert that the Primary Contact was set correctly
         System.assertEquals(testContact2.Id, updatedOpp.Primary_Contact__c, 'Primary Contact was not set correctly.');
-  }
- */ 
+    }
+
 
 
 }

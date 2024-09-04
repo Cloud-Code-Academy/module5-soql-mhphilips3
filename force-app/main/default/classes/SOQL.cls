@@ -356,8 +356,10 @@ public with sharing class SOQL {
      * @return A list of filtered Opportunity
      */
     public static List<Opportunity> getOpportunityDetailsForClosedWon() { 
-        List<Opportunity> oppList = [SELECT Id, Name, StageName, Account.Name, Owner.Name FROM Opportunity WHERE StageName = 'Closed Won'];       
-        return oppList; // Replace null with the variable you used to store the result
+        List<Opportunity> oppList = new List<Opportunity>([ SELECT Id, Name, StageName, Account.Name, Owner.Name, Primary_Contact__c 
+                                                            FROM Opportunity 
+                                                            WHERE StageName = 'Closed Won']);       
+        return oppList;
     }
 
     /**
@@ -366,18 +368,30 @@ public with sharing class SOQL {
      * Example: setPrimaryContact() should set the 'Primary_Contact__c' field for every Opportunity in the org
      */
     public static void setPrimaryContact() {
-        //Use the getOpportunityDetailsForClosedWon() method to get the Opportunities
+        List<Opportunity> oppList = getOpportunityDetailsForClosedWon();   //Use the getOpportunityDetailsForClosedWon() method to get the Opportunities
+        Set<Id> accountIdSet = new Set<Id>();
+        Map<Id, Contact> contactAccountMap = new Map<Id, Contact>();
 
-        // Create a set of Account Ids from the Opportunities
-
-        // Query the Contacts
-
-        // Loop through each Contact and add the Account Id and Contact to the map
-        
-        // Loop through each Opportunity
-
-                // Update the Opportunity primary contact from accountToContactMap
-
-        // Update the Opportunities
+        for (Opportunity opp : oppList){        // Create a set of Account Ids from the Opportunities
+            if (opp.AccountId != null){
+                accountIdSet.add(opp.AccountId);
+            }
+        }        
+        List<Contact> contactList = [SELECT Id, Name, CreatedDate, AccountId        
+                                    FROM Contact 
+                                    WHERE AccountId 
+                                    IN :accountIdSet];         
+        for (Contact cont : contactList){// Loop through each Contact and add the Account Id and Contact to the map
+            System.debug('Contact: ' + cont.Name + 'CreatedDate: ' + cont.CreatedDate);               
+            if (contactAccountMap.containsKey(cont.AccountId)){
+            continue;
+            }
+            contactAccountMap.put(cont.AccountId, cont);
+        }
+        for (Opportunity opp : oppList){                        // Loop through each Opportunity
+            Contact primeContact = contactAccountMap.get(opp.AccountId);
+            opp.Primary_Contact__c = primeContact.Id;           // Update the Opportunity primary contact from accountToContactMap            
+        }       
+        update oppList;                                     // Update the Opportunities        
     }
 }
