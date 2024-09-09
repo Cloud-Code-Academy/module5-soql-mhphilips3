@@ -388,7 +388,7 @@ public with sharing class SOQL {
             for (OpportunityLineItem oppLineItem : oppLineItemList){                            // Loop through each original line item
                 OpportunityLineItem newOLI = oppLineItem.clone(false, false, false, false);     // Clone the original line item 
                 newOLI.OpportunityId = OppCloneId;                           // associate current cloned OLI with current cloned Opportunity
-                newOLI.Quantity = randomNumber;                             // add the random number to the quantity
+                newOLI.Quantity += randomNumber;                             // add the random number to the quantity
                 clonedOppLineItemList.add(newOLI);                          // add cloned OLI to list
             }
         }
